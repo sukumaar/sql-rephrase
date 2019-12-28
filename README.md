@@ -1,4 +1,4 @@
-#sql-rephrase
+# sql-rephrase
 
 Translates create statements among sql dialects
 
