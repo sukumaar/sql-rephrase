@@ -67,6 +67,15 @@ public class NColDataType {
         return this;
     }
 
+    public ColDataType toColDataType() {
+        ColDataType colDataType = new ColDataType();
+        colDataType.setDataType(this.dataType);
+        colDataType.setArgumentsStringList(this.argumentsStringList);
+        colDataType.setArrayData(this.arrayData);
+        colDataType.setCharacterSet(this.characterSet);
+        return colDataType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

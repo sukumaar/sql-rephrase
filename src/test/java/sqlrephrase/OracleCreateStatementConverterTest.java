@@ -2,13 +2,16 @@ package sqlrephrase;
 
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import org.apache.calcite.sql2rel.SqlToRelConverter;
 import org.junit.Test;
+import sqlrephrase.datatypemapping.OracleToMSSqlTranslator;
 import sqlrephrase.datatypes.OracleDatatypes;
 import sqlrephrase.structure.NColDataType;
 import sqlrephrase.structure.NColumnDefinition;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,11 +37,13 @@ public class OracleCreateStatementConverterTest {
     final static String T1_COLUMN2 = "last_name";
 
     @Test
-    public void startingWithJSQLParser() throws Exception {
-        Statement stmt = CCJSqlParserUtil.parse("CREATE TABLE " + TABLE_1 + "(\n" +
+    public void checkTableNameColumnNameDatatype() throws Exception {
+        String createTableString = "CREATE TABLE " + TABLE_1 + "(\n" +
                 "    " + T1_COLUMN1 + " " + DATATYPE_VARCHAR2 + "(50) " + NOT_NULL + ",\n" +
                 "    " + T1_COLUMN2 + " " + DATATYPE_VARCHAR2 + "(50) " + NULL + "\n" +
-                ");");
+                ");";
+
+        Statement stmt = CCJSqlParserUtil.parse(createTableString);
         CreateTable createTableStatement = ((CreateTable) stmt);
 
         // manage expectations
@@ -61,6 +66,22 @@ public class OracleCreateStatementConverterTest {
 
         assertThat(createTableStatement.getTable().getName(), is(TABLE_1));
         assertThat(actualColumnDefinitions, is(expectedColumnDefinitions));
+    }
+
+    @Test
+    public void checkOracleToMSSqlConversion() throws Exception {
+        String oracleCreateTableString = "CREATE TABLE " + TABLE_1 + "(\n" +
+                "    " + T1_COLUMN1 + " " + DATATYPE_VARCHAR2 + "(50) " + NOT_NULL + ",\n" +
+                "    " + T1_COLUMN2 + " " + DATATYPE_VARCHAR2 + "(50) " + NULL + "\n" +
+                ");";
+        Statement stmt = CCJSqlParserUtil.parse(oracleCreateTableString);
+        CreateTable createTableStatement = ((CreateTable) stmt);
+        List<ColumnDefinition> columnDefinitionList = new ArrayList<>();
+        for (ColumnDefinition cd : createTableStatement.getColumnDefinitions()) {
+            columnDefinitionList.add(OracleToMSSqlTranslator.INSTANCE.mapDataType(cd));
+        }
+        createTableStatement.setColumnDefinitions(columnDefinitionList);
+        assertThat(createTableStatement.toString(), is("CREATE TABLE person (first_name VARCHAR (50) NOT NULL, last_name VARCHAR (50) NULL)"));
     }
 
     @Test
