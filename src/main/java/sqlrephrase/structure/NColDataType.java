@@ -16,6 +16,13 @@ public class NColDataType {
     private String characterSet;
     private List<Integer> arrayData = new ArrayList<Integer>();
 
+    private NColDataType() {
+    }
+
+    public static NColDataType EMPTY() {
+        return new NColDataType();
+    }
+
     public static NColDataType createWithColDataType(ColDataType colDataType) {
         return new NColDataType()
                 .setDataType(colDataType.getDataType())

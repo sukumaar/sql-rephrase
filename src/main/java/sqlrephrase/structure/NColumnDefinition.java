@@ -16,6 +16,21 @@ public class NColumnDefinition {
     private NColDataType colDataType;
     private List<String> columnSpecStrings;
 
+    private NColumnDefinition() {
+    }
+
+    public static NColumnDefinition EMPTY() {
+        return new NColumnDefinition();
+    }
+
+    public static List<NColumnDefinition> createArrayWithColumnDefinition(NColumnDefinition... nColumnDefinition) {
+        List nColumnDefinitionList = new ArrayList<NColumnDefinition>();
+        for (NColumnDefinition cd : nColumnDefinition) {
+            nColumnDefinitionList.add(cd);
+        }
+        return nColumnDefinitionList;
+    }
+
     public static List<NColumnDefinition> createArrayWithColumnDefinition(ColumnDefinition... columnDefinition) {
         List nColumnDefinitionList = new ArrayList<NColumnDefinition>();
         for (ColumnDefinition cd : columnDefinition) {
@@ -29,6 +44,19 @@ public class NColumnDefinition {
                 .setColumnName(columnDefinition.getColumnName())
                 .setColDataType(NColDataType.createWithColDataType(columnDefinition.getColDataType()))
                 .setColumnSpecStrings(columnDefinition.getColumnSpecStrings());
+    }
+
+    /**
+     * Use only while cloning
+     *
+     * @param nColumnDefinition
+     * @return
+     */
+    public static NColumnDefinition createWithNColumnDefinition(NColumnDefinition nColumnDefinition) {
+        return new NColumnDefinition()
+                .setColumnName(nColumnDefinition.getColumnName())
+                .setColDataType(nColumnDefinition.getColDataType())
+                .setColumnSpecStrings(nColumnDefinition.getColumnSpecStrings());
     }
 
     public List<String> getColumnSpecStrings() {
