@@ -47,19 +47,19 @@ public class OracleCreateStatementConverterTest {
         CreateTable createTableStatement = ((CreateTable) stmt);
 
         // manage expectations
-        final NColDataType VARCHAR2_50 = OracleDatatypes.VARCHAR2.setArgumentsStringList(Collections.singletonList("50"));
+        final NColDataType VARCHAR2_50 = OracleDatatypes.VARCHAR2.withArgumentsStringList(Collections.singletonList("50"));
 
         NColumnDefinition firstName = NColumnDefinition.EMPTY()
-                .setColumnName(T1_COLUMN1)
-                .setColDataType(VARCHAR2_50)
-                .setColumnSpecStrings(Arrays.asList(NOT, NULL));
+                .withColumnName(T1_COLUMN1)
+                .withColDataType(VARCHAR2_50)
+                .withColumnSpecStrings(Arrays.asList(NOT, NULL));
 
         NColumnDefinition lastName = NColumnDefinition.EMPTY()
-                .setColumnName(T1_COLUMN2)
-                .setColDataType(VARCHAR2_50)
-                .setColumnSpecStrings(Arrays.asList(NULL));
+                .withColumnName(T1_COLUMN2)
+                .withColDataType(VARCHAR2_50)
+                .withColumnSpecStrings(Arrays.asList(NULL));
 
-        List<NColumnDefinition> expectedColumnDefinitions = NColumnDefinition.createArrayWithColumnDefinition(firstName, lastName);
+        List<NColumnDefinition> expectedColumnDefinitions = Arrays.asList(firstName, lastName);
 
         List<NColumnDefinition> actualColumnDefinitions = NColumnDefinition.createArrayWithColumnDefinition(createTableStatement.getColumnDefinitions().get(0),
                 createTableStatement.getColumnDefinitions().get(1));

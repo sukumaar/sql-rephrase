@@ -3,18 +3,14 @@ package sqlrephrase.structure;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
+ * Mainly created to include equals and hashcode for object of parent class
  * @author sukumaar
  */
-public class NColDataType {
-    private String dataType;
-    private List<String> argumentsStringList;
-    private String characterSet;
-    private List<Integer> arrayData = new ArrayList<Integer>();
+public class NColDataType extends ColDataType {
 
     private NColDataType() {
     }
@@ -23,89 +19,64 @@ public class NColDataType {
         return new NColDataType();
     }
 
-    public static NColDataType createWithColDataType(ColDataType colDataType) {
+    public static ColDataType createWithColDataType(ColDataType colDataType) {
         return new NColDataType()
-                .setDataType(colDataType.getDataType())
-                .setArgumentsStringList(colDataType.getArgumentsStringList())
-                .setArrayData(colDataType.getArrayData())
-                .setCharacterSet(colDataType.getCharacterSet());
+                .withDataType(colDataType.getDataType())
+                .withArgumentsStringList(colDataType.getArgumentsStringList())
+                .withArrayData(colDataType.getArrayData())
+                .withCharacterSet(colDataType.getCharacterSet());
     }
 
-    public List<String> getArgumentsStringList() {
-        return argumentsStringList;
-    }
-
-    public NColDataType setArgumentsStringList(List<String> list) {
-        argumentsStringList = list;
+    public NColDataType withArgumentsStringList(List<String> list) {
+        this.setArgumentsStringList(list);
         return this;
     }
 
-    public String getDataType() {
-        return dataType;
-    }
-
-    public NColDataType setDataType(String string) {
-        dataType = string;
+    public NColDataType withDataType(String string) {
+        this.setDataType(string);
         return this;
     }
 
-    public String getCharacterSet() {
-        return characterSet;
-    }
-
-    public NColDataType setCharacterSet(String characterSet) {
-        this.characterSet = characterSet;
+    public NColDataType withCharacterSet(String characterSet) {
+        this.setCharacterSet(characterSet);
         return this;
     }
 
-    public List<Integer> getArrayData() {
-        return arrayData;
-    }
-
-    public NColDataType setArrayData(List<Integer> arrayData) {
-        this.arrayData = arrayData;
+    public NColDataType withArrayData(List<Integer> arrayData) {
+        this.setArrayData(arrayData);
         return this;
-    }
-
-    public ColDataType toColDataType() {
-        ColDataType colDataType = new ColDataType();
-        colDataType.setDataType(this.dataType);
-        colDataType.setArgumentsStringList(this.argumentsStringList);
-        colDataType.setArrayData(this.arrayData);
-        colDataType.setCharacterSet(this.characterSet);
-        return colDataType;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        NColDataType that = (NColDataType) o;
-        return dataType.equals(that.dataType) &&
-                Objects.equals(argumentsStringList, that.argumentsStringList) &&
-                Objects.equals(characterSet, that.characterSet) &&
-                Objects.equals(arrayData, that.arrayData);
+        ColDataType that = (ColDataType) o;
+        return this.getDataType().equals(that.getDataType()) &&
+                Objects.equals(this.getArgumentsStringList(), that.getArgumentsStringList()) &&
+                Objects.equals(this.getCharacterSet(), that.getCharacterSet()) &&
+                Objects.equals(this.getArrayData(), that.getArrayData());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dataType, argumentsStringList, characterSet, arrayData);
+        return Objects.hash(this.getDataType(), this.getArgumentsStringList(), this.getCharacterSet(), this.getArrayData());
     }
 
     @Override
     public String toString() {
         StringBuilder arraySpec = new StringBuilder();
-        for (Integer item : arrayData) {
+        for (Integer item : this.getArrayData()) {
             arraySpec.append("[");
             if (item != null) {
                 arraySpec.append(item);
             }
             arraySpec.append("]");
         }
-        return dataType
-                + (argumentsStringList != null ? " " + PlainSelect.
-                getStringList(argumentsStringList, true, true) : "")
+        return this.getDataType()
+                + (this.getArgumentsStringList() != null ? " " + PlainSelect.
+                getStringList(this.getArgumentsStringList(), true, true) : "")
                 + arraySpec.toString()
-                + (characterSet != null ? " CHARACTER SET " + characterSet : "");
+                + (this.getCharacterSet() != null ? " CHARACTER SET " + this.getCharacterSet() : "");
     }
 }

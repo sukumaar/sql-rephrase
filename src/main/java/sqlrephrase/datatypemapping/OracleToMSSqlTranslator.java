@@ -1,5 +1,6 @@
 package sqlrephrase.datatypemapping;
 
+import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import sqlrephrase.datatypes.MSSqlDatatypes;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 public enum OracleToMSSqlTranslator {
     INSTANCE;
-    public final Map<NColDataType, NColDataType> DATATYPE_MAPPING = new CaseInsensitiveMap<NColDataType, NColDataType>() {{
+    public final Map<ColDataType, ColDataType> DATATYPE_MAPPING = new CaseInsensitiveMap<ColDataType, ColDataType>() {{
         put(OracleDatatypes.VARCHAR2, MSSqlDatatypes.VARCHAR);
         put(OracleDatatypes.DATE, MSSqlDatatypes.DATETIME);
         put(OracleDatatypes.NUMBER, MSSqlDatatypes.DECIMAL);
@@ -21,11 +22,11 @@ public enum OracleToMSSqlTranslator {
 
     public final ColumnDefinition mapDataType(ColumnDefinition columnDefinition) {
         ColumnDefinition columnDefinitionNew = ColumnDefinitionCloner.clone(columnDefinition);
-        NColDataType ncd = NColDataType.createWithColDataType(columnDefinitionNew.getColDataType());
+        ColDataType ncd = NColDataType.createWithColDataType(columnDefinitionNew.getColDataType());
         if (!ncd.getArgumentsStringList().isEmpty()) {
             ncd.setArgumentsStringList(Collections.singletonList("X"));
         }
-        NColDataType targetColumnDataType = DATATYPE_MAPPING.get(ncd);
+        ColDataType targetColumnDataType = DATATYPE_MAPPING.get(ncd);
         if (!(targetColumnDataType.getArgumentsStringList().isEmpty())
                 && targetColumnDataType.getArgumentsStringList().get(0).equals("X")) {
             columnDefinitionNew.getColDataType().setDataType(targetColumnDataType.getDataType());

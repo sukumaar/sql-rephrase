@@ -1,5 +1,6 @@
 package sqlrephrase.structure;
 
+import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 
@@ -8,27 +9,17 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Mainly created to include equals and hashcode for object of parent class
+ *
  * @author sukumaar
  */
-public class NColumnDefinition {
-
-    private String columnName;
-    private NColDataType colDataType;
-    private List<String> columnSpecStrings;
+public class NColumnDefinition extends ColumnDefinition {
 
     private NColumnDefinition() {
     }
 
     public static NColumnDefinition EMPTY() {
         return new NColumnDefinition();
-    }
-
-    public static List<NColumnDefinition> createArrayWithColumnDefinition(NColumnDefinition... nColumnDefinition) {
-        List nColumnDefinitionList = new ArrayList<NColumnDefinition>();
-        for (NColumnDefinition cd : nColumnDefinition) {
-            nColumnDefinitionList.add(cd);
-        }
-        return nColumnDefinitionList;
     }
 
     public static List<NColumnDefinition> createArrayWithColumnDefinition(ColumnDefinition... columnDefinition) {
@@ -39,50 +30,25 @@ public class NColumnDefinition {
         return nColumnDefinitionList;
     }
 
-    public static NColumnDefinition createWithColumnDefinition(ColumnDefinition columnDefinition) {
+    public static ColumnDefinition createWithColumnDefinition(ColumnDefinition columnDefinition) {
         return new NColumnDefinition()
-                .setColumnName(columnDefinition.getColumnName())
-                .setColDataType(NColDataType.createWithColDataType(columnDefinition.getColDataType()))
-                .setColumnSpecStrings(columnDefinition.getColumnSpecStrings());
+                .withColumnName(columnDefinition.getColumnName())
+                .withColDataType(NColDataType.createWithColDataType(columnDefinition.getColDataType()))
+                .withColumnSpecStrings(columnDefinition.getColumnSpecStrings());
     }
 
-    /**
-     * Use only while cloning
-     *
-     * @param nColumnDefinition
-     * @return
-     */
-    public static NColumnDefinition createWithNColumnDefinition(NColumnDefinition nColumnDefinition) {
-        return new NColumnDefinition()
-                .setColumnName(nColumnDefinition.getColumnName())
-                .setColDataType(nColumnDefinition.getColDataType())
-                .setColumnSpecStrings(nColumnDefinition.getColumnSpecStrings());
-    }
-
-    public List<String> getColumnSpecStrings() {
-        return columnSpecStrings;
-    }
-
-    public NColumnDefinition setColumnSpecStrings(List<String> list) {
-        columnSpecStrings = list;
+    public NColumnDefinition withColumnSpecStrings(List<String> list) {
+        this.setColumnSpecStrings(list);
         return this;
     }
 
-    public NColDataType getColDataType() {
-        return colDataType;
-    }
-
-    public NColumnDefinition setColDataType(NColDataType type) {
-        colDataType = type;
+    public NColumnDefinition withColDataType(ColDataType type) {
+        this.setColDataType(type);
         return this;
     }
 
-    public String getColumnName() {
-        return columnName;
-    }
-
-    public NColumnDefinition setColumnName(String string) {
-        columnName = string;
+    public NColumnDefinition withColumnName(String string) {
+        this.setColumnName(string);
         return this;
     }
 
@@ -91,19 +57,19 @@ public class NColumnDefinition {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NColumnDefinition that = (NColumnDefinition) o;
-        return columnName.equals(that.columnName) &&
-                colDataType.equals(that.colDataType) &&
-                Objects.equals(columnSpecStrings, that.columnSpecStrings);
+        return this.getColumnName().equals(that.getColumnName()) &&
+                this.getColDataType().equals(that.getColDataType()) &&
+                Objects.equals(this.getColumnSpecStrings(), that.getColumnSpecStrings());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(columnName, colDataType, columnSpecStrings);
+        return Objects.hash(this.getColumnName(), this.getColDataType(), this.getColumnSpecStrings());
     }
 
     @Override
     public String toString() {
-        return columnName + " " + colDataType + (columnSpecStrings != null ? " " + PlainSelect.
-                getStringList(columnSpecStrings, false, false) : "");
+        return this.getColumnName() + " " + this.getColDataType() + (this.getColumnSpecStrings() != null ? " " + PlainSelect.
+                getStringList(this.getColumnSpecStrings(), false, false) : "");
     }
 }
